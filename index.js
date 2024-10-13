@@ -7,11 +7,16 @@ app.use(express.json());
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.use(express.static('frontend'));
+
 let checkPoints = [
     { id: 1, visited: false },
     { id: 2, visited: false },
     { id: 3, visited: false }
 ];
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/frontend/index.html');
+})
 
 app.get('/AllCheckpoints', (req, res) => {
     res.status(200).json(checkPoints);
