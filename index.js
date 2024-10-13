@@ -16,7 +16,10 @@ let checkPoints = [
 app.get('/AllCheckpoints', (req, res) => {
     res.status(200).json(checkPoints);
 });
+app.post('/AddCheckpoint', (req, res) => {
 
+    res.status(200).json('ok.');
+});
 app.listen(port, () => {
     console.log(`Now listening on port http://localhost:${port}`);
 });
