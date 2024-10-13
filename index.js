@@ -18,13 +18,20 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/frontend/index.html');
 })
 
-app.get('/AllCheckpoints', (req, res) => {
+app.get('/checkpointList', (req, res) => {
     res.status(200).json(checkPoints);
 });
-app.post('/AddCheckpoint', (req, res) => {
 
-    res.status(200).json('ok.');
+app.post('/addCheckpoint', (req, res) => {
+    const { id, visited } = req.body;
+    if (id && typeof visited === 'boolean') {
+        checkPoints.push({ id, visited });
+        res.status(201).json({ message: 'Checkpoint added successfully!' });
+    } else {
+        res.status(400).json({ message: 'Invalid data!' });
+    }
 });
+
 app.listen(port, () => {
     console.log(`Now listening on port http://localhost:${port}`);
 });
