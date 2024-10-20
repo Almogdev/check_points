@@ -51,12 +51,14 @@ app.post('/editCheckpoint', (req, res) => {
 });
 
 app.post('/visitCheckpoint', (req, res) => {
-    const { id } = req.body;
+    const { id } = req.body; // קבלת ה-ID של הנקודה
 
     const checkpointIndex = checkPoints.findIndex(point => point.id === parseInt(id));
 
     if (checkpointIndex !== -1) {
+        // עדכון הסטטוס לביקור
         checkPoints[checkpointIndex].visited = true;
+        // שמירת הזמן הנוכחי של הביקור
         checkPoints[checkpointIndex].VisitTime = Date.now();
 
         res.status(200).json({ message: 'Checkpoint visit recorded successfully!' });
@@ -64,10 +66,6 @@ app.post('/visitCheckpoint', (req, res) => {
         res.status(404).json({ message: 'Checkpoint not found!' });
     }
 });
-
-
-
-
 
 app.listen(port, () => {
     console.log(`Now listening on port http://localhost:${port}`);

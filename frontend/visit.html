@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visit Checkpoint</title>
+</head>
+
+<body>
+    <h2>Visit Checkpoint</h2>
+    <form id="visitCheckpointForm">
+        <label for="visitCheckpointId">Select Checkpoint ID:</label>
+        <select id="visitCheckpointId" name="visitCheckpointId" required>
+        </select>
+        <br><br>
+        <button type="submit">Record Visit</button>
+    </form>
+
+    <script>
+        function loadCheckpointsForVisit() {
+            fetch('/checkpointList')
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('visitCheckpointId');
+                    select.innerHTML = '';
+
+                    data.forEach(checkpoint => {
+                        const option = document.createElement('option');
+                        option.value = checkpoint.id;
+                        option.textContent = `ID: ${checkpoint.id}, Visited: ${checkpoint.visited}`;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching checkpoints:', error);
+                });
+        }
+
+        // שליחת הביקור לשרת
+        document.getElementById('visitCheckpointForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const checkpointId = document.getElementById('visitCheckpointId').value;
+
+            fetch('/visitCheckpoint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: parseInt(checkpointId)
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert('Visit recorded successfully!');
+                })
+                .catch(error => {
+                    console.error('Error recording visit:', error);
+                });
+        });
+
+        document.addEventListener('DOMContentLoaded', loadCheckpointsForVisit);
+    </script>
+</body>
+
+</html>
