@@ -23,10 +23,11 @@ app.get('/checkpointList', (req, res) => {
 });
 
 app.post('/addCheckpoint', (req, res) => {
-    const { id, visited } = req.body;
+    const { id, visited, visitedAt } = req.body; // קבלת הזמן מה-frontend
     if (id && typeof visited === 'boolean') {
-        checkPoints.push({ id, visited });
-        res.status(201).json({ message: 'Checkpoint added successfully!' });
+        const timestamp = visitedAt ? parseInt(visitedAt) : Date.now(); // אם נשלח זמן, השתמש בו, אחרת השתמש בזמן הנוכחי
+        checkPoints.push({ id, visited, VisitTime: timestamp }); // שמירת הזמן עם הנקודה
+        res.status(201).json({ message: 'Checkpoint added successfully!', visitedAt: timestamp });
     } else {
         res.status(400).json({ message: 'Invalid data!' });
     }

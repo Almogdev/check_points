@@ -14,14 +14,21 @@
         <label for="checkpointId">Checkpoint ID:</label>
         <input type="number" id="checkpointId" name="checkpointId" required>
         <br><br>
+
         <label for="visited">Visited:</label>
         <select id="visited" name="visited" required>
             <option value="true">True</option>
             <option value="false">False</option>
         </select>
         <br><br>
+
+        <label for="visitedAt">Visited At (optional):</label>
+        <input type="datetime-local" id="visitedAt" name="visitedAt">
+        <br><br>
+
         <button type="submit">Add Checkpoint</button>
     </form>
+
     <h2>Edit checkpoint</h2>
     <form id="editCheckpointForm">
         <label for="editCheckpointId">Current Checkpoint ID:</label>
@@ -35,7 +42,19 @@
 
     </form>
 
-
+    <h2>Checkpoint List</h2>
+    <table id="checkpointTable" border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Visited</th>
+                <th>Visited At</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- כאן נכניס את הנתונים -->
+        </tbody>
+    </table>
 </body>
 <script>
     //add point
@@ -43,6 +62,10 @@
         event.preventDefault();
         const checkpointId = document.getElementById('checkpointId').value;
         const visited = document.getElementById('visited').value;
+        const visitedAtInput = document.getElementById('visitedAt').value;
+
+        // בדיקה אם הוזן זמן, אם לא - שימוש בזמן הנוכחי
+        const visitedAt = visitedAtInput ? new Date(visitedAtInput).getTime() : Date.now();
 
         fetch('/addCheckpoint', {
             method: 'POST',
@@ -51,7 +74,8 @@
             },
             body: JSON.stringify({
                 id: parseInt(checkpointId),
-                visited: visited === 'true'
+                visited: visited === 'true',
+                visitedAt: visitedAt
             })
         })
             .then(response => response.json())
@@ -62,6 +86,7 @@
                 console.error('Error adding checkpoint:', error);
             });
     });
+
     //edit point
     document.getElementById('editCheckpointForm').addEventListener('submit', function (event) {
         event.preventDefault();
@@ -89,6 +114,50 @@
                 console.error('Error editing checkpoint:', error);
             });
     });
+    // Checkpoints list
+    // פונקציה שתבצע את הבקשה לשרת ותציג את הנתונים בטבלה
+    function loadCheckpoints() {
+        fetch('/checkpointList')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector('#checkpointTable tbody');
+                tableBody.innerHTML = ''; // מנקה את התוכן הקיים בטבלה
+
+                data.forEach(checkpoint => {
+                    const row = document.createElement('tr');
+
+                    // תא עבור ID
+                    const idCell = document.createElement('td');
+                    idCell.textContent = checkpoint.id;
+                    row.appendChild(idCell);
+
+                    // תא עבור visited
+                    const visitedCell = document.createElement('td');
+                    visitedCell.textContent = checkpoint.visited ? 'True' : 'False';
+                    row.appendChild(visitedCell);
+
+                    // תא עבור visitedAt (זמן הביקור)
+                    const visitedAtCell = document.createElement('td');
+                    if (checkpoint.VisitTime) {
+                        const date = new Date(checkpoint.VisitTime);
+                        visitedAtCell.textContent = date.toLocaleString(); // הצגת הזמן בפורמט קריא
+                    } else {
+                        visitedAtCell.textContent = 'Not visited';
+                    }
+                    row.appendChild(visitedAtCell);
+
+                    // הוספת השורה לטבלה
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching checkpoint list:', error);
+            });
+    }
+
+    // קריאה לפונקציה בעת טעינת העמוד
+    document.addEventListener('DOMContentLoaded', loadCheckpoints);
+
 </script>
 
 </html>
