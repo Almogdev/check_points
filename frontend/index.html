@@ -58,7 +58,7 @@
             </tr>
         </thead>
         <tbody>
-            <!-- כאן נכניס את הנתונים -->
+
         </tbody>
     </table>
 </body>
@@ -100,7 +100,7 @@
         const visited = document.getElementById('editVisited').value;
         const visitedAtInput = document.getElementById('editVisitedAt').value;
 
-        // בדיקה אם הוזן זמן, אם לא - שימוש בזמן הנוכחי
+
         const visitedAt = visitedAtInput ? new Date(visitedAtInput).getTime() : Date.now();
 
         fetch('/editCheckpoint', {
@@ -124,38 +124,35 @@
     });
 
     // Checkpoints list
-    // פונקציה שתבצע את הבקשה לשרת ותציג את הנתונים בטבלה
     function loadCheckpoints() {
         fetch('/checkpointList')
             .then(response => response.json())
             .then(data => {
                 const tableBody = document.querySelector('#checkpointTable tbody');
-                tableBody.innerHTML = ''; // מנקה את התוכן הקיים בטבלה
+                tableBody.innerHTML = '';
 
                 data.forEach(checkpoint => {
                     const row = document.createElement('tr');
 
-                    // תא עבור ID
+
                     const idCell = document.createElement('td');
                     idCell.textContent = checkpoint.id;
                     row.appendChild(idCell);
 
-                    // תא עבור visited
+
                     const visitedCell = document.createElement('td');
                     visitedCell.textContent = checkpoint.visited ? 'True' : 'False';
                     row.appendChild(visitedCell);
 
-                    // תא עבור visitedAt (זמן הביקור)
                     const visitedAtCell = document.createElement('td');
                     if (checkpoint.VisitTime) {
                         const date = new Date(checkpoint.VisitTime);
-                        visitedAtCell.textContent = date.toLocaleString(); // הצגת הזמן בפורמט קריא
+                        visitedAtCell.textContent = date.toLocaleString();
                     } else {
                         visitedAtCell.textContent = 'Not visited';
                     }
                     row.appendChild(visitedAtCell);
 
-                    // הוספת השורה לטבלה
                     tableBody.appendChild(row);
                 });
             })
@@ -164,7 +161,6 @@
             });
     }
 
-    // קריאה לפונקציה בעת טעינת העמוד
     document.addEventListener('DOMContentLoaded', loadCheckpoints);
 
 </script>

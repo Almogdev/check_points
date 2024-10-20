@@ -23,10 +23,10 @@ app.get('/checkpointList', (req, res) => {
 });
 
 app.post('/addCheckpoint', (req, res) => {
-    const { id, visited, visitedAt } = req.body; // קבלת הזמן מה-frontend
+    const { id, visited, visitedAt } = req.body;
     if (id && typeof visited === 'boolean') {
-        const timestamp = visitedAt ? parseInt(visitedAt) : Date.now(); // אם נשלח זמן, השתמש בו, אחרת השתמש בזמן הנוכחי
-        checkPoints.push({ id, visited, VisitTime: timestamp }); // שמירת הזמן עם הנקודה
+        const timestamp = visitedAt ? parseInt(visitedAt) : Date.now();
+        checkPoints.push({ id, visited, VisitTime: timestamp });
         res.status(201).json({ message: 'Checkpoint added successfully!', visitedAt: timestamp });
     } else {
         res.status(400).json({ message: 'Invalid data!' });
@@ -51,7 +51,7 @@ app.post('/editCheckpoint', (req, res) => {
 });
 
 app.post('/visitCheckpoint', (req, res) => {
-    const { id } = req.body; // קבלת ה-ID של הנקודה
+    const { id } = req.body;
 
     const checkpointIndex = checkPoints.findIndex(point => point.id === parseInt(id));
 
