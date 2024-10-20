@@ -50,6 +50,22 @@ app.post('/editCheckpoint', (req, res) => {
     }
 });
 
+app.post('/visitCheckpoint', (req, res) => {
+    const { id } = req.body; // קבלת ה-ID של הנקודה
+
+    const checkpointIndex = checkPoints.findIndex(point => point.id === parseInt(id));
+
+    if (checkpointIndex !== -1) {
+        checkPoints[checkpointIndex].visited = true;
+        checkPoints[checkpointIndex].VisitTime = Date.now();
+
+        res.status(200).json({ message: 'Checkpoint visit recorded successfully!' });
+    } else {
+        res.status(404).json({ message: 'Checkpoint not found!' });
+    }
+});
+
+
 
 
 
