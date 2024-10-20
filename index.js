@@ -34,22 +34,22 @@ app.post('/addCheckpoint', (req, res) => {
 });
 
 app.post('/editCheckpoint', (req, res) => {
-    const { currentId, newId, visited } = req.body;
+    const { currentId, visited, visitedAt } = req.body;
 
-    console.log('Received data:', { currentId, newId, visited });
-
-    const checkpointIndex = checkPoints.findIndex(point => point.id === currentId);
+    const checkpointIndex = checkPoints.findIndex(point => point.id === parseInt(currentId));
 
     if (checkpointIndex !== -1 && typeof visited === 'boolean') {
-        console.log('Checkpoint found, updating...');
-        checkPoints[checkpointIndex].id = newId;
         checkPoints[checkpointIndex].visited = visited;
+
+        // עדכון הזמן
+        checkPoints[checkpointIndex].VisitTime = visitedAt ? new Date(visitedAt).getTime() : Date.now();
+
         res.status(200).json({ message: 'Checkpoint updated successfully!' });
     } else {
-        console.log('Checkpoint not found or invalid data!');
         res.status(400).json({ message: 'Checkpoint not found or invalid data!' });
     }
 });
+
 
 
 

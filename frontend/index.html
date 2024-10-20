@@ -40,7 +40,13 @@
             <option value="false">False</option>
         </select>
 
+        <label for="editVisitedAt">Visited At (optional):</label>
+        <input type="datetime-local" id="editVisitedAt" name="editVisitedAt">
+        <br><br>
+
+        <button type="submit">Edit Checkpoint</button>
     </form>
+
 
     <h2>Checkpoint List</h2>
     <table id="checkpointTable" border="1">
@@ -64,7 +70,6 @@
         const visited = document.getElementById('visited').value;
         const visitedAtInput = document.getElementById('visitedAt').value;
 
-        // בדיקה אם הוזן זמן, אם לא - שימוש בזמן הנוכחי
         const visitedAt = visitedAtInput ? new Date(visitedAtInput).getTime() : Date.now();
 
         fetch('/addCheckpoint', {
@@ -92,28 +97,32 @@
         event.preventDefault();
 
         const checkpointId = document.getElementById('editCheckpointId').value;
-        const newCheckpointId = document.getElementById('newCheckpointId').value; // ה-ID החדש
         const visited = document.getElementById('editVisited').value;
+        const visitedAtInput = document.getElementById('editVisitedAt').value;
 
-        fetch(`/editCheckpoint`, {
+        // בדיקה אם הוזן זמן, אם לא - שימוש בזמן הנוכחי
+        const visitedAt = visitedAtInput ? new Date(visitedAtInput).getTime() : Date.now();
+
+        fetch('/editCheckpoint', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 currentId: parseInt(checkpointId),
-                newId: parseInt(newCheckpointId),
-                visited: visited === 'true'
+                visited: visited === 'true',
+                visitedAt: visitedAt
             })
         })
             .then(response => response.json())
             .then(data => {
-                alert(data.message);
+                alert('Checkpoint updated successfully!');
             })
             .catch(error => {
                 console.error('Error editing checkpoint:', error);
             });
     });
+
     // Checkpoints list
     // פונקציה שתבצע את הבקשה לשרת ותציג את הנתונים בטבלה
     function loadCheckpoints() {
